@@ -1,0 +1,155 @@
+/*
+ * Copyright (c) 2021 yiyaowen
+ *
+ * 数据结构:C语言版/严蔚敏,吴伟民编著.（计算机系列教材）
+ * --北京：清华大学出版社，1997.4 ISBN 978-7-302-02368-5
+ *
+ * 此为《数据结构（C语言版）》中抽象数据结构和常见算法的实现，
+ * 为了优化程序结构，在某些地方可能作出了经过考量的修改和优化。
+ *
+ * 使用本代码时请列出原始出处和作者名称，例如：
+ * Author: yiyaowen
+ * From: https://github.com/yiyaowen/DataStructure_Cxx
+ *
+ * Also see: https://github.com/yiyaowen/DataStructure_Cxx
+ *
+ */
+#pragma once
+
+#include "PreDefinitions.h"
+#include "ListPreDef.hpp"
+
+#include <cstdlib>
+#include <functional>
+
+namespace DataStructure_Cxx
+{
+    template<typename ElemType>
+    struct type_LNode {
+        ElemType data;
+        struct type_LNode<ElemType>* next;
+    };
+    template<typename ElemType>
+    using LNode = struct type_LNode<ElemType>;
+    template<typename ElemType>
+    using LinkList = struct type_LNode<ElemType> *;
+
+    template<typename ElemType>
+    Status InitList_L(LinkList<ElemType>& L)
+    {
+        L.elem = (ElemType*)malloc(LIST_INIT_SIZE * sizeof(ElemType));
+        if (!L.elem) exit(OVERFLOW);
+        L.length = 0;
+        L.listsize = LIST_INIT_SIZE;
+        return OK;
+    }
+
+    template<typename ElemType>
+    Status DestroyList_L(LinkList<ElemType>& L)
+    {
+        free(L.elem);
+        L.elem = NULL;
+        return OK;
+    }
+
+    template<typename ElemType>
+    Status ClearList_L(LinkList<ElemType>& L)
+    {
+        // 将链式线性表 L 重置为空表，
+        // 首先销毁 L，然后再对 L 进行初始化
+        DestroyList_Sq(L);
+        InitList_Sq(L);
+        return OK;
+    }
+
+    template<typename ElemType>
+    Status ListEmpty_L(const LinkList<ElemType>& L)
+    {
+
+    }
+
+    template<typename ElemType>
+    Status ListLength_L(const LinkList<ElemType>& L)
+    {
+
+    }
+
+    template<typename ElemType>
+    Status GetElem_L(const LinkList<ElemType>& L, int i, ElemType& e)
+    {
+        // L 为带头节点的单链表的头指针
+        // 当第 i 个元素存在时，其值赋给 e 并返回 OK，否则返回 ERROR
+        auto p = L->next; int j = 1;
+        while (p && j < i) {
+            p = p->next;
+            ++j;
+        }
+        if (!p || j > i) return ERROR; // 第 i 个元素不存在
+        e = p->data; // 第 i 个元素存在，将其赋值给 e
+        return OK;
+    }
+
+    template<typename ElemType>
+    Status LocateElem_L(const LinkList<ElemType>& L, const ElemType& e,
+        std::function<Status(const ElemType&, const ElemType&)> compare)
+    {
+
+    }
+
+
+    template<typename ElemType>
+    Status PriorElem_L(const LinkList<ElemType>& L, const ElemType& cur_e, ElemType& pre_e)
+    {
+
+    }
+
+    template<typename ElemType>
+    Status NextElem_L(const LinkList<ElemType>& L, const ElemType& cur_e, ElemType& next_e)
+    {
+
+    }
+
+    template<typename ElemType>
+    Status ListInsert_L(LinkList<ElemType>& L, int i, const ElemType& e)
+    {
+        // 在带头节点的单链表 L 中第 i 个位置之前插入元素 e
+        auto p = L; int j = 0;
+        // 寻找第 i - 1 个节点
+        while (p && j < i - 1) {
+            p = p->next;
+            ++j;
+        }
+        if (!p || j > i - 1) return ERROR; // 第 i - 1 个元素不存在
+        // 生成新的节点 s
+        auto s = (LinkList<ElemType>)malloc(sizeof(LNode<ElemType>));
+        // 将 s 插入到指定位置
+        s->data = e;
+        s->next = p->next;
+        p->next = s;
+        return OK;
+    }
+
+    template<typename ElemType>
+    Status ListDelete_L(LinkList<ElemType>& L, int i, ElemType& e)
+    {
+        // 在带头节点的单链表 L 中删除第 i 个元素，并用 e 返回其值
+        auto p = L; int j = 0;
+        while (p->next && j < i - 1) {
+            p = p->next;
+            ++j;
+        } // 这里的 while 条件和 Insert 操作有点区别，因为 Insert 要找到指定位置，而 Delete 只要找到指定位置的前一个
+        if (!(p->next) || j > i - 1) return ERROR; // 删除位置不合理
+        // 删除并释放指定节点
+        auto q = p->next;
+        p->next = q->next;
+        e = q->data;
+        free(q);
+        return OK;
+    }
+
+    template<typename ElemType>
+    Status ListTraverse_L(LinkList<ElemType>& L, std::function<Status(ElemType&)> visit)
+    {
+
+    }
+}
